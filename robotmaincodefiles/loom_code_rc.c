@@ -23,7 +23,7 @@ int numberOfPasses();
 void flipHeddles(bool cw);
 void pushFork(int pass);
 void passShuttle(int pass);
-void checkEmergencyStop();
+void checkEmergencyPause();
 
 
 task main()
@@ -93,14 +93,14 @@ void flipHeddles(bool cw)
 	{
 		motor[motorD] = 10;
 		while (nMotorEncoder[motorD] < 8.5*CM_TO_ENC)
-		{checkEmergencyStop();}
+		{checkEmergencyPause();}
 		motor[motorD] = 0;
 	}
 	else
 	{
 		motor[motorD] = -10;
 		while (nMotorEncoder[motorD] > 0)
-		{checkEmergencyStop();}
+		{checkEmergencyPause();}
 		motor[motorD]=0;
 	}
 
@@ -116,14 +116,14 @@ void pushFork(int pass)
 
 	motor[motorA] = -25;
 	while (abs(nMotorEncoder[motorA]) < (MAX_PUSH_CM*CM_TO_ENC) - (pass*DEVIATION)*CM_TO_ENC)
-	{checkEmergencyStop();}
+	{checkEmergencyPause();}
 
 	motor[motorA] = 0;
 	wait1Msec(500);
 
 	motor[motorA] = 25;
 	while (nMotorEncoder[motorA] < 0)
-	{checkEmergencyStop();}
+	{checkEmergencyPause();}
 
 	motor[motorA] = 0;
 }
@@ -133,7 +133,7 @@ void passShuttle(int pass)
 	//pass forward
 	motor[motorB] = motor[motorC] = -15;
 	while(!SensorValue[S4])
-	{checkEmergencyStop();}	//wait until touch sensor is hit
+	{checkEmergencyPause();}	//wait until touch sensor is hit
 	motor[motorB] = motor[motorC] = 0;
 
 	flipHeddles(true);
@@ -141,7 +141,7 @@ void passShuttle(int pass)
 
 	motor[motorB] = motor[motorC] = 15;
 	while(!SensorValue[S2])
-	{checkEmergencyStop();}	//wait until touch sensor is hit
+	{checkEmergencyPause();}	//wait until touch sensor is hit
 	motor[motorB] = motor[motorC] = 0;
 
 	flipHeddles(false);
@@ -149,7 +149,7 @@ void passShuttle(int pass)
 
 }
 
-void checkEmergencyStop()
+void checkEmergencyPause()
 {
 	if (getButtonPress(buttonLeft) && getButtonPress(buttonRight))
 	{
@@ -186,7 +186,7 @@ int numberOfPasses();
 void flipHeddles(bool cw);
 void pushFork(int pass);
 void passShuttle(int pass);
-void checkEmergencyStop();
+void checkEmergencyPause();
 
 
 task main()
@@ -256,14 +256,14 @@ void flipHeddles(bool cw)
 	{
 		motor[motorD] = 10;
 		while (nMotorEncoder[motorD] < 8.5*CM_TO_ENC)
-		{checkEmergencyStop();}
+		{checkEmergencyPause();}
 		motor[motorD] = 0;
 	}
 	else
 	{
 		motor[motorD] = -10;
 		while (nMotorEncoder[motorD] > 0)
-		{checkEmergencyStop();}
+		{checkEmergencyPause();}
 		motor[motorD]=0;
 	}
 
@@ -279,14 +279,14 @@ void pushFork(int pass)
 
 	motor[motorA] = -25;
 	while (abs(nMotorEncoder[motorA]) < (MAX_PUSH_CM*CM_TO_ENC) - (pass*DEVIATION)*CM_TO_ENC)
-	{checkEmergencyStop();}
+	{checkEmergencyPause();}
 
 	motor[motorA] = 0;
 	wait1Msec(500);
 
 	motor[motorA] = 25;
 	while (nMotorEncoder[motorA] < 0)
-	{checkEmergencyStop();}
+	{checkEmergencyPause();}
 
 	motor[motorA] = 0;
 }
@@ -296,7 +296,7 @@ void passShuttle(int pass)
 	//pass forward
 	motor[motorB] = motor[motorC] = -15;
 	while(!SensorValue[S4])
-	{checkEmergencyStop();}	//wait until touch sensor is hit
+	{checkEmergencyPause();}	//wait until touch sensor is hit
 	motor[motorB] = motor[motorC] = 0;
 
 	flipHeddles(true);
@@ -304,7 +304,7 @@ void passShuttle(int pass)
 
 	motor[motorB] = motor[motorC] = 15;
 	while(!SensorValue[S2])
-	{checkEmergencyStop();}	//wait until touch sensor is hit
+	{checkEmergencyPause();}	//wait until touch sensor is hit
 	motor[motorB] = motor[motorC] = 0;
 
 	flipHeddles(false);
@@ -312,16 +312,22 @@ void passShuttle(int pass)
 
 }
 
-void checkEmergencyStop()
+void checkEmergencyPause()
 {
 	if (getButtonPress(buttonLeft) && getButtonPress(buttonRight))
 	{
+		//create array that stores current motor value, set motors to zero, resume motors to what they originally are
+		int motorValues[4] = { motor[MotorA], motor[MotorB], motor[MotorC], motor[MotorD] };
 		motor[motorA] = motor[motorB] = motor[motorC] = motor[motorD] = 0; //immediatley stop everything
 		//displayString --> terminated message
 
 		while(!getButtonPress(buttonLeft) && !getButtonPress(buttonRight))
 		{} //wait for the left and right button to be pressed again
-		//create array that stores current motor value, set motors to zero, resume motors to what they originally are
+		
+		for (int index = 0; index < 4; index++)
+		{
+			motor[index] = motorValues[index];
+		}
 	}
 }
 >>>>>>> b700d1de04d5a7b6c2d017299b61a7f50b6b14a7:alannafile/loom_code_rc.c
