@@ -24,6 +24,7 @@ void flipHeddles(bool cw);
 void pushFork(int pass);
 void passShuttle(int pass);
 void checkEmergencyPause();
+void checkSpool();
 
 
 task main()
@@ -161,6 +162,19 @@ void checkEmergencyPause()
 		//create array that stores current motor value, set motors to zero, resume motors to what they originally are
 	}
 }
+
+void checkSpool () {
+	if (SensorValue[S3] != (int)colorRed) {
+		displayString(5, "please refill spool.");
+		displayString(7, "Press enter once refilled");
+		while (SensorValue[S3] != (int)colorRed) 
+		{}
+		waitButton(buttonEnter);
+	}
+}
+
+
+
 =======
 /*
 Group #
