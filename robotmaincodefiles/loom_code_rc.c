@@ -75,20 +75,14 @@ int getRows()
     {
 	if( getButtonPress(UP_BUTTON) )
 	{
-		while( !getButtonPress(UP_BUTTON) )
-		{	}
-		while( getButtonPress(UP_BUTTON) )
-		{	}
-		rows += 2;
+	    waitButton(UP_BUTTON);
+	    rows += 2;
 	}
 
 	if( getButtonPress(DOWN_BUTTON) )
 	{
-		while( !getButtonPress(DOWN_BUTTON) )
-		{	}
-		while( getButtonPress(DOWN_BUTTON) )
-		{	}
-		rows -= 2;
+	    waitButton(UP_BUTTON);
+    	rows -= 2;
 	}
 	    
 	if( rows<MIN_ROWS || rows>MAX_ROWS )
@@ -114,44 +108,44 @@ void waitButton(TEV3Buttons button_name)
 
 void flipHeddles(bool cw)
 {
-	const float CM_TO_ENC = 360/(2.29*PI);
+    const float CM_TO_ENC = 360/(2.29*PI);
 
-	if (cw)
-	{
-		motor[motorD] = 10;
-		while (nMotorEncoder[motorD] < 8.5*CM_TO_ENC)
-		{checkEmergencyPause();}
-		motor[motorD] = 0;
-	}
-	else
-	{
-		motor[motorD] = -10;
-		while (nMotorEncoder[motorD] > 0)
-		{checkEmergencyPause();}
-		motor[motorD]=0;
-	}
+    if (cw)
+    {
+    	motor[motorD] = 10;
+	while (nMotorEncoder[motorD] < 8.5*CM_TO_ENC)
+	{checkEmergencyPause();}
+	motor[motorD] = 0;
+    }
+    else
+    {
+	motor[motorD] = -10;
+	while (nMotorEncoder[motorD] > 0)
+	{checkEmergencyPause();}
+	motor[motorD]=0;
+    }
 }
 
 void pushFork(int pass)
 {
-	const float MAX_PUSH_CM = 25;
-	const float CM_TO_ENC = 180/(3.91*PI);
-	const float DEVIATION = 0.2; //2mm
+    const float MAX_PUSH_CM = 25;
+    const float CM_TO_ENC = 180/(3.91*PI);
+    const float DEVIATION = 0.2; //2mm
 
-	nMotorEncoder[motorA] = 0;
+    nMotorEncoder[motorA] = 0;
 
-	motor[motorA] = -25;
-	while (abs(nMotorEncoder[motorA]) < (MAX_PUSH_CM*CM_TO_ENC) - (pass*DEVIATION)*CM_TO_ENC)
-	{checkEmergencyPause();}
+    motor[motorA] = -25;
+    while (abs(nMotorEncoder[motorA]) < (MAX_PUSH_CM*CM_TO_ENC) - (pass*DEVIATION)*CM_TO_ENC)
+    {checkEmergencyPause();}
 
-	motor[motorA] = 0;
-	wait1Msec(500);
+    motor[motorA] = 0;
+    wait1Msec(500);
+	
+    motor[motorA] = 25;
+    while (nMotorEncoder[motorA] < 0)
+    {checkEmergencyPause();}
 
-	motor[motorA] = 25;
-	while (nMotorEncoder[motorA] < 0)
-	{checkEmergencyPause();}
-
-	motor[motorA] = 0;
+    motor[motorA] = 0;
 }
 
 void passShuttle(int pass)
